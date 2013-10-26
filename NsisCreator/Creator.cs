@@ -8,7 +8,7 @@ namespace NsisCreator
 {
   public class Creator
   {
-    private NsisSetup setup;
+    private Script setup;
     private List<FileBasedSection> sections;
 
     public Creator()
@@ -18,7 +18,7 @@ namespace NsisCreator
 
     public void LoadMainSetup(string fileName)
     {
-      setup = Serializer.Load<NsisSetup>(fileName);
+      setup = Serializer.Load<Script>(fileName);
     }
 
     public void AddSections(IEnumerable<string> sections)

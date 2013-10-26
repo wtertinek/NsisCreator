@@ -7,9 +7,9 @@ using System.Xml.Serialization;
 
 namespace NsisCreator
 {
-  public class NsisSetup
+  public class Script
   {
-    public NsisSetup()
+    public Script()
     {
       ProductName = "";
       ProductVersion = "${PRODUCT_VERSION}";
@@ -86,6 +86,8 @@ namespace NsisCreator
         builder.AppendLine();
         AdditonalSections[i].AppendInstall(builder, i + 2);
       }
+
+      // TODO: Remove german texts
 
       builder.AppendLine();
       builder.AppendLine("Function un.onUninstSuccess");      

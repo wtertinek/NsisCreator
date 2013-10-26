@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB44B39A-1C1A-4D47-AA64-ED6708937A40}</ProjectGuid>
+    <ProjectGuid>{76B1A1E3-2021-42AC-9F9C-3F785BBF4CFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NsisCreator</RootNamespace>
-    <AssemblyName>NsisCreator.Core</AssemblyName>
+    <RootNamespace>NsisCreator.Builder</RootNamespace>
+    <AssemblyName>NsisCreator.Builder</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +28,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,21 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\StringBuilderExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Filter.cs" />
-    <Compile Include="Items\Directory.cs" />
-    <Compile Include="Items\Enums.cs" />
-    <Compile Include="Items\EnvironmentVariable.cs" />
-    <Compile Include="Items\File.cs" />
-    <Compile Include="Items\FileGroup.cs" />
-    <Compile Include="Items\MainSection.cs" />
-    <Compile Include="Items\SectionBase.cs" />
-    <Compile Include="Items\ShortCut.cs" />
-    <Compile Include="Script.cs" />
+    <Compile Include="NsisBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Items\FileBasedSection.cs" />
-    <Compile Include="Serializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
