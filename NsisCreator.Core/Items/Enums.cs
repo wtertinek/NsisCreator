@@ -21,4 +21,11 @@ namespace NsisCreator
     AllUsers,
     CurrentUser
   }
+
+  public enum FilterType
+  {
+    Contains,
+    StartsWith,
+    EndsWith
+  }
 }

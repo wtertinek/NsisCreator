@@ -11,16 +11,16 @@ namespace NsisCreator
     public Directory()
     {
       DirectoryName = "";
-      IncludeFilters = new Filter[0];
-      ExcludeFilters = new Filter[0];
+      IncludeFilters = new List<Filter>();
+      ExcludeFilters = new List<Filter>();
       Overwrite = OverwriteMode.On;
     }
 
     public string DirectoryName { get; set; }
 
-    public Filter[] IncludeFilters { get; set; }
+    public List<Filter> IncludeFilters { get; set; }
 
-    public Filter[] ExcludeFilters { get; set; }
+    public List<Filter> ExcludeFilters { get; set; }
 
     public OverwriteMode Overwrite { get; set; }
 

@@ -11,12 +11,12 @@ namespace NsisCreator
     public FileGroup()
     {
       Overwrite = OverwriteMode.On;
-      Files = new File[0];
+      Files = new List<File>();
     }
 
     public OverwriteMode Overwrite { get; set; }
 
-    public File[] Files { get; set; }
+    public List<File> Files { get; set; }
 
     public OverwriteMode AppendInstall(StringBuilder builder, OverwriteMode currentMode)
     {

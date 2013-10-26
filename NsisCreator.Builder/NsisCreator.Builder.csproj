@@ -39,9 +39,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NsisBuilder.cs" />
+    <Compile Include="AdditionalDirectoryBuilder.cs" />
+    <Compile Include="AdditionalSectionBuilder.cs" />
+    <Compile Include="FileBuilder.cs" />
+    <Compile Include="FileGroupBuilder.cs" />
+    <Compile Include="MainDirectoryBuilder.cs" />
+    <Compile Include="MainSectionBuilder.cs" />
+    <Compile Include="ScriptBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NsisCreator.Core\NsisCreator.Core.csproj">
+      <Project>{eb44b39a-1c1a-4d47-aa64-ed6708937a40}</Project>
+      <Name>NsisCreator.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

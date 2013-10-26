@@ -46,13 +46,6 @@ namespace NsisCreator
       }
     }
 
-    public enum FilterType
-    {
-      Contains,
-      StartsWith,
-      EndsWith
-    }
-
     public static Filter Executables
     {
       get { return new Filter() { Value = "exe", Type = FilterType.EndsWith }; }

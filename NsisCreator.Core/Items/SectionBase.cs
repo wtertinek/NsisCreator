@@ -13,7 +13,7 @@ namespace NsisCreator
       Name = "";
       OutDir = "$INSTDIR";
       Context = ShellVarContext.CurrentUser;
-      EnvironmentVariables = new EnvironmentVariable[0];
+      EnvironmentVariables = new List<EnvironmentVariable>();
     }
 
     public string Name { get; set; }
@@ -22,7 +22,7 @@ namespace NsisCreator
 
     public ShellVarContext Context { get; set; }
 
-    public EnvironmentVariable[] EnvironmentVariables { get; set; }
+    public List<EnvironmentVariable> EnvironmentVariables { get; set; }
 
     public virtual void AppendInstall(StringBuilder builder, int index)
     {

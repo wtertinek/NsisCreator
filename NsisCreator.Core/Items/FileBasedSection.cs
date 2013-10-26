@@ -12,16 +12,16 @@ namespace NsisCreator
   {
     public FileBasedSection()
     {
-      Directories = new Directory[0];
-      FileGroups = new FileGroup[0];
-      ShortCuts = new ShortCut[0];
+      Directories = new List<Directory>();
+      FileGroups = new List<FileGroup>();
+      ShortCuts = new List<ShortCut>();
     }
 
-    public Directory[] Directories { get; set; }
+    public List<Directory> Directories { get; set; }
 
-    public FileGroup[] FileGroups { get; set; }
+    public List<FileGroup> FileGroups { get; set; }
 
-    public ShortCut[] ShortCuts { get; set; }
+    public List<ShortCut> ShortCuts { get; set; }
 
     protected override void AppendInstallBodyBegin(StringBuilder builder)
     {
