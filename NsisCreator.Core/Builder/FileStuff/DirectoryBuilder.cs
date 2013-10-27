@@ -6,40 +6,39 @@ using System.Threading.Tasks;
 
 namespace NsisCreator.Builder
 {
-  public class MainDirectoryBuilder
+  public class DirectoryBuilder<TParent>
   {
     private Directory directory;
 
-    internal MainDirectoryBuilder(string directoryName, MainSectionBuilder parent)
+    internal DirectoryBuilder(Directory directory, TParent parent)
     {
-      directory = new Directory();
-      directory.DirectoryName = directoryName;
+      this.directory = directory;
       Parent = parent;
     }
 
-    public MainSectionBuilder Parent { get; private set; }
+    public TParent Parent { get; private set; }
 
-    public MainDirectoryBuilder AddIncludeFilter(FilterType type, string value)
+    public DirectoryBuilder<TParent> AddIncludeFilter(FilterType type, string value)
     {
       return AddFilter(directory.IncludeFilters, type, value, true);
     }
 
-    public MainDirectoryBuilder AddIncludeFilter(FilterType type, string value, bool ignoreCase)
+    public DirectoryBuilder<TParent> AddIncludeFilter(FilterType type, string value, bool ignoreCase)
     {
       return AddFilter(directory.IncludeFilters, type, value, ignoreCase);
     }
 
-    public MainDirectoryBuilder AddExcludeFilter(FilterType type, string value)
+    public DirectoryBuilder<TParent> AddExcludeFilter(FilterType type, string value)
     {
       return AddFilter(directory.ExcludeFilters, type, value, true);
     }
 
-    public MainDirectoryBuilder AddExcludeFilter(FilterType type, string value, bool ignoreCase)
+    public DirectoryBuilder<TParent> AddExcludeFilter(FilterType type, string value, bool ignoreCase)
     {
       return AddFilter(directory.ExcludeFilters, type, value, ignoreCase);
     }
 
-    private MainDirectoryBuilder AddFilter(List<Filter> list, FilterType type, string value, bool ignoreCase)
+    private DirectoryBuilder<TParent> AddFilter(List<Filter> list, FilterType type, string value, bool ignoreCase)
     {
       list.Add(new Filter()
                {
@@ -50,7 +49,7 @@ namespace NsisCreator.Builder
       return this;
     }
 
-    public MainDirectoryBuilder SetOverwriteMode(OverwriteMode mode)
+    public DirectoryBuilder<TParent> SetOverwriteMode(OverwriteMode mode)
     {
       directory.Overwrite = mode;
       return this;

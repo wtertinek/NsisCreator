@@ -10,11 +10,11 @@ namespace NsisCreator
   {
     public File()
     {
-      SourceName = "";
+      FilePath = "";
       TargetName = "";
     }
 
-    public string SourceName { get; set; }
+    public string FilePath { get; set; }
 
     public string TargetName { get; set; }
 
@@ -24,11 +24,11 @@ namespace NsisCreator
     {
       if (!string.IsNullOrEmpty(TargetName))
       {
-        builder.AppendLine(2, "File \"/oname={0}\" \"{1}\"", TargetName, SourceName);
+        builder.AppendLine(2, "File \"/oname={0}\" \"{1}\"", TargetName, FilePath);
       }
       else
       {
-        builder.AppendLine(2, "File \"{0}\"", SourceName);
+        builder.AppendLine(2, "File \"{0}\"", FilePath);
       }
     }
 
@@ -44,7 +44,7 @@ namespace NsisCreator
         }
         else
         {
-          append(SourceName);
+          append(FilePath);
         }
       }
     }

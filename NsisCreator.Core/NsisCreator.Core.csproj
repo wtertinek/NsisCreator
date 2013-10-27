@@ -42,6 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\AdditionalSectionBuilder.cs" />
+    <Compile Include="Builder\FileStuff\FileBuilder.cs" />
+    <Compile Include="Builder\FileStuff\FileGroupBuilder.cs" />
+    <Compile Include="Builder\FileStuff\FileProvider.cs" />
+    <Compile Include="Builder\FileStuff\DirectoryBuilder.cs" />
+    <Compile Include="Builder\FileStuff\OutDir.cs" />
+    <Compile Include="Builder\MainSectionBuilder.cs" />
+    <Compile Include="Builder\ScriptBuilder.cs" />
     <Compile Include="Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Filter.cs" />

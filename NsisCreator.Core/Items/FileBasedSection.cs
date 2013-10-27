@@ -14,12 +14,15 @@ namespace NsisCreator
     {
       Directories = new List<Directory>();
       FileGroups = new List<FileGroup>();
+      Files = new List<File>();
       ShortCuts = new List<ShortCut>();
     }
 
     public List<Directory> Directories { get; set; }
 
     public List<FileGroup> FileGroups { get; set; }
+
+    public List<File> Files { get; set; }
 
     public List<ShortCut> ShortCuts { get; set; }
 
@@ -52,6 +55,8 @@ namespace NsisCreator
       {
         overwrite = fileGroup.AppendInstall(builder, overwrite);
       }
+
+      // TODO: Add files here
 
       if (ShortCuts.Any())
       {

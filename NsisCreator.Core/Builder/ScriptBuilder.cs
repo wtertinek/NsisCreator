@@ -9,13 +9,12 @@ namespace NsisCreator.Builder
   public class ScriptBuilder
   {
     private Script script;
-    private MainSectionBuilder mainSection;
     private List<AdditionalSectionBuilder> additionalSections;
 
     public ScriptBuilder()
     {
       script = new Script();
-      mainSection = new MainSectionBuilder(this);
+      MainSection = new MainSectionBuilder(script.MainSection, this);
       additionalSections = new List<AdditionalSectionBuilder>();
     }
 
@@ -23,7 +22,9 @@ namespace NsisCreator.Builder
 
     public AdditionalSectionBuilder AddAdditionalSection(string sectionName)
     {
-      additionalSections.Add(new AdditionalSectionBuilder(sectionName, this));
+      var section = new FileBasedSection() { Name = sectionName };
+      script.AdditonalSections.Add(section);
+      additionalSections.Add(new AdditionalSectionBuilder(section, this));
       return additionalSections.Last();
     }
 
@@ -57,9 +58,9 @@ namespace NsisCreator.Builder
       return this;
     }
 
-    public ScriptBuilder SilentInstall(bool silent)
+    public ScriptBuilder EnableSilentInstall(bool silent)
     {
-      script.Silent = silent;
+      script.AllowSilentInstall = silent;
       return this;
     }
 

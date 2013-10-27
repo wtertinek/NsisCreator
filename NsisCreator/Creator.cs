@@ -38,7 +38,7 @@ namespace NsisCreator
     {
       var tmpSections = new List<FileBasedSection>(setup.AdditonalSections);
       tmpSections.AddRange(sections);
-      setup.AdditonalSections = tmpSections.ToArray();
+      setup.AdditonalSections = tmpSections;
     }
 
     public void PrintToConsole()

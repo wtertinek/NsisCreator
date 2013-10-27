@@ -16,7 +16,7 @@ namespace NsisCreator
       ProductPublisher = "";
       OutFileName = "${OUT_FILE}";
       MainSection = new MainSection();
-      AdditonalSections = new FileBasedSection[0];
+      AdditonalSections = new List<FileBasedSection>();
     }
 
     public string ProductName { get; set; }
@@ -29,11 +29,11 @@ namespace NsisCreator
 
     public bool ShowDetails { get; set; }
 
-    public bool Silent { get; set; }
+    public bool AllowSilentInstall { get; set; }
 
     public MainSection MainSection { get; set; }
 
-    public FileBasedSection[] AdditonalSections { get; set; }
+    public List<FileBasedSection> AdditonalSections { get; set; }
 
     public string Generate()
     {
@@ -74,14 +74,14 @@ namespace NsisCreator
       builder.AppendLine("InstallDirRegKey HKLM \"${PRODUCT_DIR_REGKEY}\" \"\"");
       builder.AppendLine("ShowInstDetails {0}", ShowDetails ? "show" : "hide");
       builder.AppendLine("ShowUnInstDetails {0}", ShowDetails ? "show" : "hide");
-      builder.AppendLine("SilentInstall {0}", Silent ? "silent" : "normal");
-      builder.AppendLine("SilentUnInstall {0}", Silent ? "silent" : "normal");
+      builder.AppendLine("SilentInstall {0}", AllowSilentInstall ? "silent" : "normal");
+      builder.AppendLine("SilentUnInstall {0}", AllowSilentInstall ? "silent" : "normal");
 
       builder.AppendLine();
       MainSection.Init(ProductPublisher, ProductName);
       MainSection.AppendInstall(builder, 1);
 
-      for (int i = 0; i < AdditonalSections.Length; i++)
+      for (int i = 0; i < AdditonalSections.Count; i++)
       {
         builder.AppendLine();
         AdditonalSections[i].AppendInstall(builder, i + 2);

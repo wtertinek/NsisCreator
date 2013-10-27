@@ -6,28 +6,25 @@ using System.Threading.Tasks;
 
 namespace NsisCreator.Builder
 {
-  public class FileBuilder
+  public class FileBuilder<TParent>
   {
     private File file;
 
-    internal FileBuilder()
+    internal FileBuilder(File file, TParent parent)
     {
-      file = new File();
+      this.file = file;
+      Parent = parent;
     }
 
-    public FileBuilder SetSourceName(string filePath)
-    {
-      file.SourceName = filePath;
-      return this;
-    }
+    public TParent Parent { get; private set; }
 
-    public FileBuilder SetTargetName(string fileName)
+    public FileBuilder<TParent> SetTargetName(string fileName)
     {
       file.TargetName = fileName;
       return this;
     }
 
-    public FileBuilder KeepFileOnUninstall(bool keep)
+    public FileBuilder<TParent> KeepFileOnUninstall(bool keep)
     {
       file.KeepFileOnUninstall = keep;
       return this;
