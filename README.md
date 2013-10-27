@@ -29,7 +29,7 @@ builder.SetProductName("Backup3000")
 
 We use the variable *OUT_FILE* so we can provide the name of the final EXE file at runtime.
 
-With the XML file at hand you can integrate NsisCreator into your build process. You simply have to call NsisCreator and provide the XML file and define the name of the output file: 
+With the XML file at hand you can integrate NsisCreator into your build process. You simply have to call NsisCreator, provide the XML file and define the name of the output file: 
 
 	NsisCreator -i C:\Build\Backup3000.xml -o C:\Build\Backup3000.nsi
 
@@ -41,7 +41,7 @@ This step finally creates our setup package *C:\Deployment\Backup3000_Setup.exe*
 
 ## Modules
 
-Based on the previous example, we now can build two different variants of our application, one for a test environment and one for a production environment. We assume that the two variants have different configuration files and that the production variant needs some additional PDF files which are placed in AppData.
+Based on the previous example, we now can build two different variants of our application, one for a test environment and one for a production environment. We assume that the two variants have different configuration files and that the production variant needs some additional PDF files which should be placed in AppData.
 
 #### Test Environment
 
