@@ -9,18 +9,20 @@ namespace NsisCreator.Builder
   public class MainSectionBuilder
   {
     private MainSection section;
+    private List<DirectoryBuilder<MainSectionBuilder>> directories;
 
     internal MainSectionBuilder(MainSection section, ScriptBuilder parent)
     {
       this.section = section;
       Parent = parent;
-      Files = new FileProvider<MainSectionBuilder>(section, this);
+      Files = new InputProvider<MainSectionBuilder>(section, this);
+      directories = new List<DirectoryBuilder<MainSectionBuilder>>();
     }
 
     public ScriptBuilder Parent { get; private set; }
 
-    public FileProvider<MainSectionBuilder> Files { get; private set; }
-
+    public InputProvider<MainSectionBuilder> Files { get; private set; }
+    
     #region SectionBase stuff
 
     public MainSectionBuilder SetName(string name)
@@ -29,7 +31,7 @@ namespace NsisCreator.Builder
       return this;
     }
 
-    public MainSectionBuilder SetOutDir(OutDir outDir)
+    public MainSectionBuilder SetOutDir(Directory outDir)
     {
       section.OutDir = outDir.Path;
       return this;
@@ -63,6 +65,14 @@ namespace NsisCreator.Builder
     {
       section.ExecutableName = executableName;
       return this;
+    }
+
+    public DirectoryBuilder<MainSectionBuilder> Create(Directory directory)
+    {
+      var dir = new AdditionalDirectory() { Path = directory.Path };
+      section.Directories.Add(dir);
+      directories.Add(new DirectoryBuilder<MainSectionBuilder>(dir, this));
+      return directories.Last();
     }
   }
 }

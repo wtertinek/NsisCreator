@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace NsisCreator.Builder
 {
-  public class DirectoryBuilder<TParent>
+  public class InputDirectoryBuilder<TParent>
   {
-    private Directory directory;
+    private InputDirectory directory;
 
-    internal DirectoryBuilder(Directory directory, TParent parent)
+    internal InputDirectoryBuilder(InputDirectory directory, TParent parent)
     {
       this.directory = directory;
       Parent = parent;
@@ -18,27 +18,27 @@ namespace NsisCreator.Builder
 
     public TParent Parent { get; private set; }
 
-    public DirectoryBuilder<TParent> AddIncludeFilter(FilterType type, string value)
+    public InputDirectoryBuilder<TParent> AddIncludeFilter(FilterType type, string value)
     {
       return AddFilter(directory.IncludeFilters, type, value, true);
     }
 
-    public DirectoryBuilder<TParent> AddIncludeFilter(FilterType type, string value, bool ignoreCase)
+    public InputDirectoryBuilder<TParent> AddIncludeFilter(FilterType type, string value, bool ignoreCase)
     {
       return AddFilter(directory.IncludeFilters, type, value, ignoreCase);
     }
 
-    public DirectoryBuilder<TParent> AddExcludeFilter(FilterType type, string value)
+    public InputDirectoryBuilder<TParent> AddExcludeFilter(FilterType type, string value)
     {
       return AddFilter(directory.ExcludeFilters, type, value, true);
     }
 
-    public DirectoryBuilder<TParent> AddExcludeFilter(FilterType type, string value, bool ignoreCase)
+    public InputDirectoryBuilder<TParent> AddExcludeFilter(FilterType type, string value, bool ignoreCase)
     {
       return AddFilter(directory.ExcludeFilters, type, value, ignoreCase);
     }
 
-    private DirectoryBuilder<TParent> AddFilter(List<Filter> list, FilterType type, string value, bool ignoreCase)
+    private InputDirectoryBuilder<TParent> AddFilter(List<Filter> list, FilterType type, string value, bool ignoreCase)
     {
       list.Add(new Filter()
                {
@@ -49,7 +49,7 @@ namespace NsisCreator.Builder
       return this;
     }
 
-    public DirectoryBuilder<TParent> SetOverwriteMode(OverwriteMode mode)
+    public InputDirectoryBuilder<TParent> SetOverwriteMode(OverwriteMode mode)
     {
       directory.Overwrite = mode;
       return this;

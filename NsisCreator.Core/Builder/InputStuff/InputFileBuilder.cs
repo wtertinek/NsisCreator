@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace NsisCreator.Builder
 {
-  public class FileBuilder<TParent>
+  public class InputFileBuilder<TParent>
   {
-    private File file;
+    private InputFile file;
 
-    internal FileBuilder(File file, TParent parent)
+    internal InputFileBuilder(InputFile file, TParent parent)
     {
       this.file = file;
       Parent = parent;
@@ -18,15 +18,15 @@ namespace NsisCreator.Builder
 
     public TParent Parent { get; private set; }
 
-    public FileBuilder<TParent> SetTargetName(string fileName)
+    public InputFileBuilder<TParent> SetTargetName(string fileName)
     {
       file.TargetName = fileName;
       return this;
     }
 
-    public FileBuilder<TParent> KeepFileOnUninstall(bool keep)
+    public InputFileBuilder<TParent> KeepFileAfterUninstall(bool keep)
     {
-      file.KeepFileOnUninstall = keep;
+      file.KeepFileAfterUninstall = keep;
       return this;
     }
   }

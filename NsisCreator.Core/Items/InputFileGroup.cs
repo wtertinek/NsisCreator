@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace NsisCreator
 {
-  public class FileGroup
+  public class InputFileGroup
   {
-    public FileGroup()
+    public InputFileGroup()
     {
       Overwrite = OverwriteMode.On;
-      Files = new List<File>();
+      Files = new List<InputFile>();
     }
 
     public OverwriteMode Overwrite { get; set; }
 
-    public List<File> Files { get; set; }
+    public List<InputFile> Files { get; set; }
 
     public OverwriteMode AppendInstall(StringBuilder builder, OverwriteMode currentMode)
     {

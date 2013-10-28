@@ -10,12 +10,12 @@ namespace NsisCreator
   {
     public ShortCut()
     {
-      ShortCutPath = "";
+      Path = "";
       TargetPath = "";
       Argument = "";
     }
 
-    public string ShortCutPath { get; set; }
+    public string Path { get; set; }
 
     public string TargetPath { get; set; }
 
@@ -23,7 +23,7 @@ namespace NsisCreator
 
     public void AppendInstall(StringBuilder builder)
     {
-      builder.AppendFormat(2, "CreateShortCut \"{0}\" \"{1}\"", ShortCutPath, TargetPath);
+      builder.AppendFormat(2, "CreateShortCut \"{0}\" \"{1}\"", Path, TargetPath);
 
       if (!string.IsNullOrEmpty(Argument))
       {
@@ -35,22 +35,7 @@ namespace NsisCreator
 
     public void AppendUninstall(StringBuilder builder)
     {
-      builder.AppendLine(2, "Delete \"{0}\"", ShortCutPath);
-    }
-
-    public static ShortCut CreateUninstall(string shortCutPath, params object[] args)
-    {
-      return Create(string.Format(shortCutPath, args), @"$INSTDIR\uninst.exe", "");
-    }
-
-    public static ShortCut Create(string shortCutPath, string targetPath, string argument)
-    {
-      return new ShortCut()
-      {
-        ShortCutPath = shortCutPath,
-        TargetPath = targetPath,
-        Argument = argument
-      };
+      builder.AppendLine(2, "Delete \"{0}\"", Path);
     }
   }
 }

@@ -32,12 +32,16 @@ namespace NsisCreator.Builder.Tests
       var builder = new ScriptBuilder();
       var mainSection = builder.MainSection.SetName("MainSection")
                                            .SetExecutableName("Startup.exe")
-                                           .SetOutDir(OutDir.ProgramFiles("MyCompany", "MyProject"))
+                                           .SetOutDir(Directory.ProgramFiles("MyCompany", "MyProject"))
                                            .Files.AddFromDirectory(@"C:\MyProject\Binaries")
                                                  .AddIncludeFilter(FilterType.EndsWith, ".dll")
                                                  .AddIncludeFilter(FilterType.EndsWith, ".exe").Parent
                                                  .Parent
                                            .AddEnvironmentVariable("Variable1", "Value1")
+                                           .Create(Directory.StartMenuPrograms("MyCompany", "MyProject"))
+                                             .AddShortCut("The Program", "Startup.exe")
+                                             .AddShortCutToUninstall("Uninstall")
+                                             .Parent
                                            .Parent
                                .GetScript()
                                .MainSection;
@@ -46,18 +50,26 @@ namespace NsisCreator.Builder.Tests
       Assert.AreEqual("Startup.exe", mainSection.ExecutableName);
       Assert.AreEqual(@"$PROGRAMFILES\MyCompany\MyProject", mainSection.OutDir);
       
-      Assert.AreEqual(1, mainSection.Directories.Count);
-      Assert.AreEqual(@"C:\MyProject\Binaries", mainSection.Directories[0].DirectoryName);
+      Assert.AreEqual(1, mainSection.InputDirectories.Count);
+      Assert.AreEqual(@"C:\MyProject\Binaries", mainSection.InputDirectories[0].DirectoryName);
       
-      Assert.AreEqual(2, mainSection.Directories[0].IncludeFilters.Count);
-      Assert.AreEqual(FilterType.EndsWith, mainSection.Directories[0].IncludeFilters[0].Type);
-      Assert.AreEqual(".dll", mainSection.Directories[0].IncludeFilters[0].Value);
-      Assert.AreEqual(FilterType.EndsWith, mainSection.Directories[0].IncludeFilters[1].Type);
-      Assert.AreEqual(".exe", mainSection.Directories[0].IncludeFilters[1].Value);
+      Assert.AreEqual(2, mainSection.InputDirectories[0].IncludeFilters.Count);
+      Assert.AreEqual(FilterType.EndsWith, mainSection.InputDirectories[0].IncludeFilters[0].Type);
+      Assert.AreEqual(".dll", mainSection.InputDirectories[0].IncludeFilters[0].Value);
+      Assert.AreEqual(FilterType.EndsWith, mainSection.InputDirectories[0].IncludeFilters[1].Type);
+      Assert.AreEqual(".exe", mainSection.InputDirectories[0].IncludeFilters[1].Value);
       
       Assert.AreEqual(1, mainSection.EnvironmentVariables.Count);
       Assert.AreEqual("Variable1", mainSection.EnvironmentVariables[0].Name);
       Assert.AreEqual("Value1", mainSection.EnvironmentVariables[0].Value);
+
+      Assert.AreEqual(1, mainSection.Directories.Count);
+      Assert.AreEqual(@"$SMPROGRAMS\MyCompany\MyProject", mainSection.Directories[0].Path);
+      Assert.AreEqual(2, mainSection.Directories[0].ShortCuts.Count);
+      Assert.AreEqual(@"$SMPROGRAMS\MyCompany\MyProject\The Program", mainSection.Directories[0].ShortCuts[0].Path);
+      Assert.AreEqual("Startup.exe", mainSection.Directories[0].ShortCuts[0].TargetPath);
+      Assert.AreEqual(@"$SMPROGRAMS\MyCompany\MyProject\Uninstall", mainSection.Directories[0].ShortCuts[1].Path);
+      Assert.AreEqual(@"$INSTDIR\uninst.exe", mainSection.Directories[0].ShortCuts[1].TargetPath);
     }
 
     [TestMethod]
@@ -65,7 +77,7 @@ namespace NsisCreator.Builder.Tests
     {
       var builder = new ScriptBuilder();
       var additionalSections = builder.AddAdditionalSection("OtherSection")
-                                        .SetOutDir(OutDir.ProgramFiles("MyCompany", "MyProject", "Other"))
+                                        .SetOutDir(Directory.ProgramFiles("MyCompany", "MyProject", "Other"))
                                         .Files.AddFromDirectory(@"C:\MyProject\OtherStuff")
                                           .AddExcludeFilter(FilterType.EndsWith, ".txt").Parent
                                           .Parent
@@ -77,12 +89,12 @@ namespace NsisCreator.Builder.Tests
       Assert.AreEqual("OtherSection", additionalSections[0].Name);
       Assert.AreEqual(@"$PROGRAMFILES\MyCompany\MyProject\Other", additionalSections[0].OutDir);
 
-      Assert.AreEqual(1, additionalSections[0].Directories.Count);
-      Assert.AreEqual(@"C:\MyProject\OtherStuff", additionalSections[0].Directories[0].DirectoryName);
+      Assert.AreEqual(1, additionalSections[0].InputDirectories.Count);
+      Assert.AreEqual(@"C:\MyProject\OtherStuff", additionalSections[0].InputDirectories[0].DirectoryName);
 
-      Assert.AreEqual(1, additionalSections[0].Directories[0].ExcludeFilters.Count);
-      Assert.AreEqual(FilterType.EndsWith, additionalSections[0].Directories[0].ExcludeFilters[0].Type);
-      Assert.AreEqual(".txt", additionalSections[0].Directories[0].ExcludeFilters[0].Value);
+      Assert.AreEqual(1, additionalSections[0].InputDirectories[0].ExcludeFilters.Count);
+      Assert.AreEqual(FilterType.EndsWith, additionalSections[0].InputDirectories[0].ExcludeFilters[0].Type);
+      Assert.AreEqual(".txt", additionalSections[0].InputDirectories[0].ExcludeFilters[0].Value);
     }
   }
 }

@@ -43,21 +43,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\AdditionalSectionBuilder.cs" />
-    <Compile Include="Builder\FileStuff\FileBuilder.cs" />
-    <Compile Include="Builder\FileStuff\FileGroupBuilder.cs" />
-    <Compile Include="Builder\FileStuff\FileProvider.cs" />
-    <Compile Include="Builder\FileStuff\DirectoryBuilder.cs" />
-    <Compile Include="Builder\FileStuff\OutDir.cs" />
+    <Compile Include="Builder\DirectoryBuilder.cs" />
+    <Compile Include="Builder\InputStuff\InputFileBuilder.cs" />
+    <Compile Include="Builder\InputStuff\InputFileGroupBuilder.cs" />
+    <Compile Include="Builder\InputStuff\InputProvider.cs" />
+    <Compile Include="Builder\InputStuff\InputDirectoryBuilder.cs" />
+    <Compile Include="Builder\Directory.cs" />
     <Compile Include="Builder\MainSectionBuilder.cs" />
     <Compile Include="Builder\ScriptBuilder.cs" />
+    <Compile Include="Builder\Variable.cs" />
     <Compile Include="Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Filter.cs" />
-    <Compile Include="Items\Directory.cs" />
+    <Compile Include="Items\AdditionalDirectory.cs" />
+    <Compile Include="Items\InputDirectory.cs" />
     <Compile Include="Items\Enums.cs" />
     <Compile Include="Items\EnvironmentVariable.cs" />
-    <Compile Include="Items\File.cs" />
-    <Compile Include="Items\FileGroup.cs" />
+    <Compile Include="Items\InputFile.cs" />
+    <Compile Include="Items\InputFileGroup.cs" />
     <Compile Include="Items\MainSection.cs" />
     <Compile Include="Items\SectionBase.cs" />
     <Compile Include="Items\ShortCut.cs" />

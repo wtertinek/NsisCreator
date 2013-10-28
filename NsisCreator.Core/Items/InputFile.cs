@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace NsisCreator
 {
-  public class File
+  public class InputFile
   {
-    public File()
+    public InputFile()
     {
       FilePath = "";
       TargetName = "";
@@ -18,7 +18,7 @@ namespace NsisCreator
 
     public string TargetName { get; set; }
 
-    public bool KeepFileOnUninstall { get; set; }
+    public bool KeepFileAfterUninstall { get; set; }
 
     public void AppendInstall(StringBuilder builder)
     {
@@ -34,7 +34,7 @@ namespace NsisCreator
 
     public void AppendUninstall(StringBuilder builder, string outPath)
     {
-      if (!KeepFileOnUninstall)
+      if (!KeepFileAfterUninstall)
       {
         Action<string> append = name => builder.AppendLine(2, "Delete \"{0}\"", System.IO.Path.Combine(outPath, System.IO.Path.GetFileName(name)));
 

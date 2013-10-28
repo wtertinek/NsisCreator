@@ -19,12 +19,12 @@ namespace NsisCreator.Builder
     {
       Parent = parent;
       this.section = section;
-      Files = new FileProvider<AdditionalSectionBuilder>(section, this);
+      Files = new InputProvider<AdditionalSectionBuilder>(section, this);
     }
 
     public ScriptBuilder Parent { get; private set; }
 
-    public FileProvider<AdditionalSectionBuilder> Files { get; private set; }
+    public InputProvider<AdditionalSectionBuilder> Files { get; private set; }
 
     #region SectionBase stuff
 
@@ -34,7 +34,7 @@ namespace NsisCreator.Builder
       return this;
     }
 
-    public AdditionalSectionBuilder SetOutDir(OutDir outDir)
+    public AdditionalSectionBuilder SetOutDir(Directory outDir)
     {
       section.OutDir = outDir.Path;
       return this;

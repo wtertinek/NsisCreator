@@ -12,25 +12,25 @@ namespace NsisCreator
   {
     public FileBasedSection()
     {
-      Directories = new List<Directory>();
-      FileGroups = new List<FileGroup>();
-      Files = new List<File>();
-      ShortCuts = new List<ShortCut>();
+      InputDirectories = new List<InputDirectory>();
+      InputFileGroups = new List<InputFileGroup>();
+      InputFiles = new List<InputFile>();
+      Directories = new List<AdditionalDirectory>();
     }
 
-    public List<Directory> Directories { get; set; }
+    public List<InputDirectory> InputDirectories { get; set; }
 
-    public List<FileGroup> FileGroups { get; set; }
+    public List<InputFileGroup> InputFileGroups { get; set; }
 
-    public List<File> Files { get; set; }
+    public List<InputFile> InputFiles { get; set; }
 
-    public List<ShortCut> ShortCuts { get; set; }
+    public List<AdditionalDirectory> Directories { get; set; }
 
     protected override void AppendInstallBodyBegin(StringBuilder builder)
     {
       base.AppendInstallBodyBegin(builder);
 
-      if (Directories.Any() || FileGroups.Any())
+      if (InputDirectories.Any() || InputFileGroups.Any())
       {
         builder.AppendLine(2, "SetOutPath \"{0}\"", OutDir);
       }
@@ -40,46 +40,37 @@ namespace NsisCreator
     {
       var overwrite = OverwriteMode.On;
 
-      foreach (var directory in Directories)
+      foreach (var directory in InputDirectories)
       {
         builder.AppendLine();
         overwrite = directory.AppendInstall(builder, overwrite);
       }
 
-      if (FileGroups.Any())
+      if (InputFileGroups.Any())
       {
         builder.AppendLine();
       }
 
-      foreach (var fileGroup in FileGroups)
+      foreach (var fileGroup in InputFileGroups)
       {
         overwrite = fileGroup.AppendInstall(builder, overwrite);
       }
 
-      // TODO: Add files here
+      // TODO: Add code for InputFiles here
 
-      if (ShortCuts.Any())
+      if (Directories.Any())
       {
         builder.AppendLine();
       }
 
-      var shortCutPaths = ShortCuts.Where(s => s.ShortCutPath.Count(c => c.Equals('\\')) > 1)
-                                   .Select(s => System.IO.Path.GetDirectoryName(s.ShortCutPath))
-                                   .Distinct();
-
-      foreach (var shortCutPath in shortCutPaths)
+      foreach (var directory in Directories)
       {
-        builder.AppendLine(2, "CreateDirectory \"{0}\"", shortCutPath);
+        directory.AppendInstall(builder);
       }
 
-      if (shortCutPaths.Any())
+      if (Directories.Any())
       {
         builder.AppendLine();
-      }
-
-      foreach (var shortCut in ShortCuts)
-      {
-        shortCut.AppendInstall(builder);
       }
 
       base.AppendInstallBodyMain(builder);
@@ -87,17 +78,17 @@ namespace NsisCreator
 
     protected override void AppendUninstallBodyMain(StringBuilder builder)
     {
-      foreach (var shortCut in ShortCuts)
+      foreach (var directory in Directories)
       {
-        shortCut.AppendUninstall(builder);
+        directory.AppendUninstall(builder);
       }
 
-      foreach (var file in FileGroups)
+      foreach (var file in InputFileGroups)
       {
         file.AppendUninstall(builder, OutDir);
       }
 
-      foreach (var directory in Directories)
+      foreach (var directory in InputDirectories)
       {
         directory.AppendUninstall(builder, OutDir);
       }
@@ -108,8 +99,8 @@ namespace NsisCreator
     public IEnumerable<string> GetPathsToRemove()
     {
       var pathsToRemove = new List<string>();
-      pathsToRemove.AddRange(GetPaths(ShortCuts.Select(s => System.IO.Path.GetDirectoryName(s.ShortCutPath.Trim('\"')))));
-      pathsToRemove.AddRange(GetPaths(from file in FileGroups.SelectMany(g => g.Files)
+      pathsToRemove.AddRange(GetPaths(Directories.Select(d => d.Path)));
+      pathsToRemove.AddRange(GetPaths(from file in InputFileGroups.SelectMany(g => g.Files)
                                       where !string.IsNullOrEmpty(file.TargetName) &&
                                             file.TargetName.Contains("\\")
                                       select System.IO.Path.GetDirectoryName(System.IO.Path.Combine(OutDir, file.TargetName))));

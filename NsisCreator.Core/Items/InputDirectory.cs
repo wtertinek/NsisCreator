@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace NsisCreator
 {
-  public class Directory
+  public class InputDirectory
   {
-    public Directory()
+    public InputDirectory()
     {
       DirectoryName = "";
       IncludeFilters = new List<Filter>();
