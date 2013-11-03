@@ -42,14 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builder\AdditionalSectionBuilder.cs" />
     <Compile Include="Builder\DirectoryBuilder.cs" />
     <Compile Include="Builder\InputStuff\InputFileBuilder.cs" />
     <Compile Include="Builder\InputStuff\InputFileGroupBuilder.cs" />
     <Compile Include="Builder\InputStuff\InputProvider.cs" />
     <Compile Include="Builder\InputStuff\InputDirectoryBuilder.cs" />
     <Compile Include="Builder\Directory.cs" />
-    <Compile Include="Builder\MainSectionBuilder.cs" />
+    <Compile Include="Builder\SectionBuilder.cs" />
     <Compile Include="Builder\ScriptBuilder.cs" />
     <Compile Include="Builder\Variable.cs" />
     <Compile Include="Extensions\StringBuilderExtensions.cs" />
@@ -61,12 +60,11 @@
     <Compile Include="Items\EnvironmentVariable.cs" />
     <Compile Include="Items\InputFile.cs" />
     <Compile Include="Items\InputFileGroup.cs" />
-    <Compile Include="Items\MainSection.cs" />
-    <Compile Include="Items\SectionBase.cs" />
+    <Compile Include="Items\Uninstaller.cs" />
     <Compile Include="Items\ShortCut.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Items\FileBasedSection.cs" />
+    <Compile Include="Items\Section.cs" />
     <Compile Include="Serializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

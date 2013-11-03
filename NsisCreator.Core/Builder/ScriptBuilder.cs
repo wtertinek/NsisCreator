@@ -9,23 +9,20 @@ namespace NsisCreator.Builder
   public class ScriptBuilder
   {
     private Script script;
-    private List<AdditionalSectionBuilder> additionalSections;
+    private List<SectionBuilder> sections;
 
     public ScriptBuilder()
     {
       script = new Script();
-      MainSection = new MainSectionBuilder(script.MainSection, this);
-      additionalSections = new List<AdditionalSectionBuilder>();
+      sections = new List<SectionBuilder>();
     }
 
-    public MainSectionBuilder MainSection { get; private set; }
-
-    public AdditionalSectionBuilder AddAdditionalSection(string sectionName)
+    public SectionBuilder AddAdditionalSection(string sectionName)
     {
-      var section = new FileBasedSection() { Name = sectionName };
-      script.AdditonalSections.Add(section);
-      additionalSections.Add(new AdditionalSectionBuilder(section, this));
-      return additionalSections.Last();
+      var section = new Section() { Name = sectionName };
+      script.Sections.Add(section);
+      sections.Add(new SectionBuilder(section, this));
+      return sections.Last();
     }
 
     public ScriptBuilder SetProductName(string productName)
@@ -43,6 +40,18 @@ namespace NsisCreator.Builder
     public ScriptBuilder SetProductPublisher(string productPublisher)
     {
       script.ProductPublisher = productPublisher;
+      return this;
+    }
+
+    public ScriptBuilder SetExecutableName(string executableName)
+    {
+      script.ExecutableName = executableName;
+      return this;
+    }
+
+    public ScriptBuilder SetInstallDir(string installDir)
+    {
+      script.InstallDir = installDir;
       return this;
     }
 

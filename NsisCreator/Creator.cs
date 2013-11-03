@@ -9,11 +9,11 @@ namespace NsisCreator
   public class Creator
   {
     private Script setup;
-    private List<FileBasedSection> sections;
+    private List<Section> sections;
 
     public Creator()
     {
-      sections = new List<FileBasedSection>(); 
+      sections = new List<Section>(); 
     }
 
     public void LoadMainSetup(string fileName)
@@ -31,14 +31,14 @@ namespace NsisCreator
 
     public void AddSection(string fileName)
     {
-      sections.Add(Serializer.Load<FileBasedSection>(fileName));
+      sections.Add(Serializer.Load<Section>(fileName));
     }
 
     private void InitSections()
     {
-      var tmpSections = new List<FileBasedSection>(setup.AdditonalSections);
+      var tmpSections = new List<Section>(setup.Sections);
       tmpSections.AddRange(sections);
-      setup.AdditonalSections = tmpSections;
+      setup.Sections = tmpSections;
     }
 
     public void PrintToConsole()

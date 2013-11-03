@@ -6,50 +6,50 @@ using System.Threading.Tasks;
 
 namespace NsisCreator.Builder
 {
-  public class MainSectionBuilder
+  public class SectionBuilder
   {
-    private MainSection section;
-    private List<DirectoryBuilder<MainSectionBuilder>> directories;
+    private Section section;
+    private List<DirectoryBuilder<SectionBuilder>> directories;
 
-    internal MainSectionBuilder(MainSection section, ScriptBuilder parent)
+    internal SectionBuilder(Section section, ScriptBuilder parent)
     {
       this.section = section;
       Parent = parent;
-      Files = new InputProvider<MainSectionBuilder>(section, this);
-      directories = new List<DirectoryBuilder<MainSectionBuilder>>();
+      Files = new InputProvider<SectionBuilder>(section, this);
+      directories = new List<DirectoryBuilder<SectionBuilder>>();
     }
 
     public ScriptBuilder Parent { get; private set; }
 
-    public InputProvider<MainSectionBuilder> Files { get; private set; }
+    public InputProvider<SectionBuilder> Files { get; private set; }
     
     #region SectionBase stuff
 
-    public MainSectionBuilder SetName(string name)
+    public SectionBuilder SetName(string name)
     {
       section.Name = name;
       return this;
     }
 
-    public MainSectionBuilder SetOutDir(Directory outDir)
+    public SectionBuilder SetOutDir(Directory outDir)
     {
       section.OutDir = outDir.Path;
       return this;
     }
 
-    public MainSectionBuilder SetShellVarContextAllUsers()
+    public SectionBuilder SetShellVarContextAllUsers()
     {
       section.Context = ShellVarContext.AllUsers;
       return this;
     }
 
-    public MainSectionBuilder SetShellVarContextCurrentUser()
+    public SectionBuilder SetShellVarContextCurrentUser()
     {
       section.Context = ShellVarContext.CurrentUser;
       return this;
     }
 
-    public MainSectionBuilder AddEnvironmentVariable(string name, string value)
+    public SectionBuilder AddEnvironmentVariable(string name, string value)
     {
       section.EnvironmentVariables.Add(new EnvironmentVariable()
                                        {
@@ -61,17 +61,16 @@ namespace NsisCreator.Builder
 
     #endregion
 
-    public MainSectionBuilder SetExecutableName(string executableName)
+    public void Save(string fileName)
     {
-      section.ExecutableName = executableName;
-      return this;
+      Serializer.Save(this, fileName);
     }
 
-    public DirectoryBuilder<MainSectionBuilder> Create(Directory directory)
+    public DirectoryBuilder<SectionBuilder> Create(Directory directory)
     {
       var dir = new AdditionalDirectory() { Path = directory.Path };
       section.Directories.Add(dir);
-      directories.Add(new DirectoryBuilder<MainSectionBuilder>(dir, this));
+      directories.Add(new DirectoryBuilder<SectionBuilder>(dir, this));
       return directories.Last();
     }
   }

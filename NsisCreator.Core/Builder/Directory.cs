@@ -14,24 +14,13 @@ namespace NsisCreator.Builder
       Path = path;
     }
 
-    private Directory(string root, string mainDirectory, params string[] subDirectories)
+    private Directory(string root, params string[] subDirectories)
     {
-      if (!string.IsNullOrEmpty(mainDirectory))
-      {
-        CheckDirectory(mainDirectory);
-      }
-
       subDirectories.ToList()
                     .ForEach(d => CheckDirectory(d));
 
       var builder = new StringBuilder();
       builder.Append(root);
-
-      if (!string.IsNullOrEmpty(mainDirectory))
-      {
-        builder.Append("\\");
-        builder.Append(mainDirectory);
-      }
 
       foreach (var dir in subDirectories)
       {
@@ -59,34 +48,39 @@ namespace NsisCreator.Builder
       return new Directory(fullPath);
     }
 
-    public static Directory ProgramFiles(string mainDirectory, params string[] subDirectories)
+    public static Directory InstallDir(params string[] subDirectories)
     {
-      return new Directory("$PROGRAMFILES", mainDirectory, subDirectories);
+      return new Directory("$INSTDIR", subDirectories);
     }
 
-    public static Directory CommonFiles(string mainDirectory, params string[] subDirectories)
+    public static Directory ProgramFiles(params string[] subDirectories)
     {
-      return new Directory("$COMMONFILES", mainDirectory, subDirectories);
+      return new Directory("$PROGRAMFILES", subDirectories);
     }
 
-    public static Directory AppData(string mainDirectory, params string[] subDirectories)
+    public static Directory CommonFiles(params string[] subDirectories)
     {
-      return new Directory("$APPDATA", mainDirectory, subDirectories);
+      return new Directory("$COMMONFILES", subDirectories);
     }
 
-    public static Directory LocalAppData(string mainDirectory, params string[] subDirectories)
+    public static Directory AppData(params string[] subDirectories)
     {
-      return new Directory("$LOCALAPPDATA", mainDirectory, subDirectories);
+      return new Directory("$APPDATA", subDirectories);
     }
 
-    public static Directory UserProfile(string mainDirectory, params string[] subDirectories)
+    public static Directory LocalAppData(params string[] subDirectories)
     {
-      return new Directory("$PROFILE", mainDirectory, subDirectories);
+      return new Directory("$LOCALAPPDATA", subDirectories);
     }
 
-    public static Directory Desktop(string mainDirectory, params string[] subDirectories)
+    public static Directory UserProfile(params string[] subDirectories)
     {
-      return new Directory("$DESKTOP", mainDirectory, subDirectories);
+      return new Directory("$PROFILE", subDirectories);
+    }
+
+    public static Directory Desktop(params string[] subDirectories)
+    {
+      return new Directory("$DESKTOP", subDirectories);
     }
 
     public static Directory StartMenu()
@@ -94,14 +88,14 @@ namespace NsisCreator.Builder
       return new Directory("$STARTMENU", "");
     }
 
-    public static Directory StartMenuPrograms(string mainDirectory, params string[] subDirectories)
+    public static Directory StartMenuPrograms(params string[] subDirectories)
     {
-      return new Directory("$SMPROGRAMS", mainDirectory, subDirectories);
+      return new Directory("$SMPROGRAMS", subDirectories);
     }
 
-    public static Directory Temp(string mainDirectory, params string[] subDirectories)
+    public static Directory Temp(params string[] subDirectories)
     {
-      return new Directory("$TEMP", mainDirectory, subDirectories);
+      return new Directory("$TEMP", subDirectories);
     }
 
     public static Directory WinDir()

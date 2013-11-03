@@ -12,40 +12,41 @@ namespace NsisCreator
     public Script()
     {
       ProductName = "";
-      ProductVersion = "${PRODUCT_VERSION}";
+      ProductVersion = Builder.Variable.Create("PRODUCT_VERSION");
       ProductPublisher = "";
-      OutFileName = "${OUT_FILE}";
-      MainSection = new MainSection();
-      AdditonalSections = new List<FileBasedSection>();
+      OutFileName = Builder.Variable.Create("OUT_FILE");
+      Sections = new List<Section>();
+      Uninstaller = true;
     }
 
     public string ProductName { get; set; }
     
-    public string ProductVersion { get; set; }
-    
     public string ProductPublisher { get; set; }
 
+    public string ProductVersion { get; set; }
+
+    public string InstallDir { get; set; }
+
+    public string ExecutableName { get; set; }
+
     public string OutFileName { get; set; }
+
+    public bool Uninstaller { get; set; }
 
     public bool ShowDetails { get; set; }
 
     public bool AllowSilentInstall { get; set; }
 
-    public MainSection MainSection { get; set; }
-
-    public List<FileBasedSection> AdditonalSections { get; set; }
+    public List<Section> Sections { get; set; }
 
     public string Generate()
     {
-      var sections = new List<FileBasedSection>();
-      sections.Add(MainSection);
-      sections.AddRange(AdditonalSections);
-
       var builder = new StringBuilder();
-      builder.AppendLine("!define PRODUCT_DIR_REGKEY \"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\{0}\"", MainSection.ExecutableName);
+      builder.AppendLine("!define PRODUCT_DIR_REGKEY \"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\{0}\"", ExecutableName);
       builder.AppendLine("!define PRODUCT_UNINST_KEY \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0}\"", ProductName);
       builder.AppendLine("!define PRODUCT_UNINST_ROOT_KEY \"HKLM\"");
       builder.AppendLine();
+      // TODO: Currently this code is static, insert page as a type.
       builder.AppendLine("; MUI 1.67 compatible ------");
       builder.AppendLine("!include \"MUI.nsh\"");
       builder.AppendLine();
@@ -70,21 +71,25 @@ namespace NsisCreator
       builder.AppendLine();
       builder.AppendLine("Name \"{0}\"", ProductName);
       builder.AppendLine("OutFile \"{0}\"", OutFileName);
-      builder.AppendLine("InstallDir \"{0}\"", MainSection.OutDir);
+      builder.AppendLine("InstallDir \"{0}\"", InstallDir);
       builder.AppendLine("InstallDirRegKey HKLM \"${PRODUCT_DIR_REGKEY}\" \"\"");
       builder.AppendLine("ShowInstDetails {0}", ShowDetails ? "show" : "hide");
       builder.AppendLine("ShowUnInstDetails {0}", ShowDetails ? "show" : "hide");
       builder.AppendLine("SilentInstall {0}", AllowSilentInstall ? "silent" : "normal");
       builder.AppendLine("SilentUnInstall {0}", AllowSilentInstall ? "silent" : "normal");
 
-      builder.AppendLine();
-      MainSection.Init(ProductPublisher, ProductName);
-      MainSection.AppendInstall(builder, 1);
-
-      for (int i = 0; i < AdditonalSections.Count; i++)
+      for (int i = 0; i < Sections.Count; i++)
       {
         builder.AppendLine();
-        AdditonalSections[i].AppendInstall(builder, i + 2);
+        Sections[i].AppendInstall(builder, i + 1);
+      }
+
+      if (Uninstaller)
+      {
+        builder.AppendLine();
+
+        var uninstaller = new NsisCreator.Uninstaller();
+        uninstaller.AppendInstall(builder, ProductPublisher, ProductName, ExecutableName);
       }
 
       // TODO: Remove german texts
@@ -128,7 +133,7 @@ namespace NsisCreator
       builder.AppendLine();
       builder.AppendLine("Section Uninstall");
 
-      if (sections.Any(s => s.EnvironmentVariables.Any()))
+      if (Sections.Any(s => s.EnvironmentVariables.Any()))
       {
         builder.AppendLine(2, "!include \"winmessages.nsh\"");
         builder.AppendLine(2, "!define env_hkcu 'HKCU \"Environment\"'");
@@ -137,14 +142,14 @@ namespace NsisCreator
 
       var lastContext = ShellVarContext.CurrentUser;
 
-      for (int i = sections.Count - 1; i >= 0; i--)
+      for (int i = Sections.Count - 1; i >= 0; i--)
       {
-        sections[i].AppendUninstall(builder, lastContext);
-        lastContext = sections[i].Context;
+        Sections[i].AppendUninstall(builder, lastContext);
+        lastContext = Sections[i].Context;
 
-        if (sections[i].OutDir == "$INSTDIR")
+        if (Sections[i].OutDir == "$INSTDIR")
         {
-          sections[i].OutDir = MainSection.OutDir;
+          Sections[i].OutDir = InstallDir;
         }
 
         if (i > 0)
@@ -153,7 +158,7 @@ namespace NsisCreator
         }
       }
 
-      var pathsToRemove = sections.SelectMany(s => s.GetPathsToRemove())
+      var pathsToRemove = Sections.SelectMany(s => s.GetPathsToRemove())
                                   .Distinct()
                                   .Where(p => p.Contains("\\"))
                                   .GroupBy(g => g.Split('\\')[0])

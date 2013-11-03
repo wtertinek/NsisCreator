@@ -8,15 +8,27 @@ using System.Threading.Tasks;
 namespace NsisCreator
 {
   [DebuggerDisplay("{Name}")]
-  public class FileBasedSection : SectionBase
+  public class Section
   {
-    public FileBasedSection()
+    public Section()
     {
+      Name = "";
+      OutDir = "$INSTDIR";
+      Context = ShellVarContext.CurrentUser;
+      EnvironmentVariables = new List<EnvironmentVariable>();
       InputDirectories = new List<InputDirectory>();
       InputFileGroups = new List<InputFileGroup>();
       InputFiles = new List<InputFile>();
       Directories = new List<AdditionalDirectory>();
     }
+
+    public string Name { get; set; }
+
+    public string OutDir { get; set; }
+
+    public ShellVarContext Context { get; set; }
+
+    public List<EnvironmentVariable> EnvironmentVariables { get; set; }
 
     public List<InputDirectory> InputDirectories { get; set; }
 
@@ -26,18 +38,26 @@ namespace NsisCreator
 
     public List<AdditionalDirectory> Directories { get; set; }
 
-    protected override void AppendInstallBodyBegin(StringBuilder builder)
+    public virtual void AppendInstall(StringBuilder builder, int index)
     {
-      base.AppendInstallBodyBegin(builder);
+      builder.AppendLine("Section \"{0}\" SEC{1}", Name, index.ToString("D2"));
+
+      if (EnvironmentVariables.Any())
+      {
+        builder.AppendLine(2, "!include \"winmessages.nsh\"");
+        builder.AppendLine(2, "!define env_hkcu 'HKCU \"Environment\"'");
+      }
+
+      if (Context == ShellVarContext.AllUsers)
+      {
+        builder.AppendLine(2, "SetShellVarContext {0}", Context == ShellVarContext.AllUsers ? "all" : "current");
+      }
 
       if (InputDirectories.Any() || InputFileGroups.Any())
       {
         builder.AppendLine(2, "SetOutPath \"{0}\"", OutDir);
       }
-    }
-
-    protected override void AppendInstallBodyMain(StringBuilder builder)
-    {
+  
       var overwrite = OverwriteMode.On;
 
       foreach (var directory in InputDirectories)
@@ -73,11 +93,26 @@ namespace NsisCreator
         builder.AppendLine();
       }
 
-      base.AppendInstallBodyMain(builder);
+      if (EnvironmentVariables.Any())
+      {
+        builder.AppendLine();
+      }
+
+      foreach (var environmentVariable in EnvironmentVariables)
+      {
+        environmentVariable.AppendInstall(builder);
+      }
+
+      builder.AppendLine("SectionEnd");
     }
 
-    protected override void AppendUninstallBodyMain(StringBuilder builder)
+    public virtual void AppendUninstall(StringBuilder builder, ShellVarContext currentContext)
     {
+      if (currentContext != Context && (Context == ShellVarContext.AllUsers || currentContext == ShellVarContext.AllUsers))
+      {
+        builder.AppendLine(2, "SetShellVarContext {0}", Context == ShellVarContext.AllUsers ? "all" : "current");
+      }
+
       foreach (var directory in Directories)
       {
         directory.AppendUninstall(builder);
@@ -93,7 +128,15 @@ namespace NsisCreator
         directory.AppendUninstall(builder, OutDir);
       }
 
-      base.AppendUninstallBodyMain(builder);
+      if (EnvironmentVariables.Any())
+      {
+        builder.AppendLine();
+      }
+
+      foreach (var environmentVariable in EnvironmentVariables)
+      {
+        environmentVariable.AppendUninstall(builder);
+      }
     }
 
     public IEnumerable<string> GetPathsToRemove()

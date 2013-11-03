@@ -10,36 +10,43 @@ namespace NsisCreator
   {
     static void Main(string[] args)
     {
-      var parameters = new Parameters(args);
-
-      if (!parameters.IsSyntacticallyValid)
+      try
       {
-        Console.WriteLine("Parameters not valid.");
-        Console.WriteLine("Usage: -i InputFile [-e ExecutionPath]? [-o OutputFile]? [-a SectionFile]*");
-      }
-      else
-      {
-        if (parameters.HasExecutionPath)
+        var parameters = new Parameters(args);
+
+        if (!parameters.IsSyntacticallyValid)
         {
-          CheckDirectory(parameters.ExecutionPath);
-          Environment.CurrentDirectory = parameters.ExecutionPath;
-        }
-
-        CheckFile(parameters.InputFile);
-        parameters.Sections.ToList().ForEach(s => CheckFile(s));
-
-        var generator = new Creator();
-        generator.LoadMainSetup(parameters.InputFile);
-        generator.AddSections(parameters.Sections);
-
-        if (parameters.HasOutputFile)
-        {
-          generator.SaveToFile(parameters.OutputFile);
+          Console.WriteLine("Parameters not valid.");
+          Console.WriteLine("Usage: -i InputFile [-e ExecutionPath]? [-o OutputFile]? [-a SectionFile]*");
         }
         else
         {
-          generator.PrintToConsole();
+          if (parameters.HasExecutionPath)
+          {
+            CheckDirectory(parameters.ExecutionPath);
+            Environment.CurrentDirectory = parameters.ExecutionPath;
+          }
+
+          CheckFile(parameters.InputFile);
+          parameters.Sections.ToList().ForEach(s => CheckFile(s));
+
+          var generator = new Creator();
+          generator.LoadMainSetup(parameters.InputFile);
+          generator.AddSections(parameters.Sections);
+
+          if (parameters.HasOutputFile)
+          {
+            generator.SaveToFile(parameters.OutputFile);
+          }
+          else
+          {
+            generator.PrintToConsole();
+          }
         }
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e.Message);
       }
     }
 

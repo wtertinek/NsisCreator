@@ -48,12 +48,26 @@ namespace NsisCreator
 
     public static Filter Executables
     {
-      get { return new Filter() { Value = "exe", Type = FilterType.EndsWith }; }
+      get
+      {
+        return new Filter()
+               {
+                 Value = "exe",
+                 Type = FilterType.EndsWith
+               };
+      }
     }
 
     public static Filter Libraries
     {
-      get { return new Filter() { Value = "dll", Type = FilterType.EndsWith }; }
+      get
+      {
+        return new Filter()
+               {
+                 Value = "dll",
+                 Type = FilterType.EndsWith
+               };
+      }
     }
   }
 }

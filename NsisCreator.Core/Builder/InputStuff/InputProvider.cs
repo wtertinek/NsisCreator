@@ -8,12 +8,12 @@ namespace NsisCreator.Builder
 {
   public class InputProvider<TParent>
   {
-    private FileBasedSection section;
+    private Section section;
     private List<InputDirectoryBuilder<InputProvider<TParent>>> directoryBuilders;
     private List<InputFileGroupBuilder<InputProvider<TParent>>> fileGroupBuilders;
     private List<InputFileBuilder<InputProvider<TParent>>> fileBuilders;
 
-    internal InputProvider(FileBasedSection section, TParent parent)
+    internal InputProvider(Section section, TParent parent)
     {
       this.section = section;
       this.Parent = parent;

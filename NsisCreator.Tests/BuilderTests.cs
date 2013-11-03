@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NsisCreator.Builder.Tests
@@ -30,24 +31,22 @@ namespace NsisCreator.Builder.Tests
     public void TestMainSectionBuilder()
     {
       var builder = new ScriptBuilder();
-      var mainSection = builder.MainSection.SetName("MainSection")
-                                           .SetExecutableName("Startup.exe")
-                                           .SetOutDir(Directory.ProgramFiles("MyCompany", "MyProject"))
-                                           .Files.AddFromDirectory(@"C:\MyProject\Binaries")
-                                                 .AddIncludeFilter(FilterType.EndsWith, ".dll")
-                                                 .AddIncludeFilter(FilterType.EndsWith, ".exe").Parent
-                                                 .Parent
-                                           .AddEnvironmentVariable("Variable1", "Value1")
-                                           .Create(Directory.StartMenuPrograms("MyCompany", "MyProject"))
-                                             .AddShortCut("The Program", "Startup.exe")
-                                             .AddShortCutToUninstall("Uninstall")
-                                             .Parent
-                                           .Parent
-                               .GetScript()
-                               .MainSection;
+      var mainSection = builder.AddAdditionalSection("MainSection")
+                               .SetOutDir(Directory.ProgramFiles("MyCompany", "MyProject"))
+                               .Files.AddFromDirectory(@"C:\MyProject\Binaries")
+                                     .AddIncludeFilter(FilterType.EndsWith, ".dll")
+                                     .AddIncludeFilter(FilterType.EndsWith, ".exe").Parent
+                                     .Parent
+                               .AddEnvironmentVariable("Variable1", "Value1")
+                               .Create(Directory.StartMenuPrograms("MyCompany", "MyProject"))
+                                 .AddShortCut("The Program", "Startup.exe")
+                                 .AddShortCutToUninstall("Uninstall")
+                                 .Parent
+                               .Parent
+                                .GetScript()
+                               .Sections.First();
 
       Assert.AreEqual("MainSection", mainSection.Name);
-      Assert.AreEqual("Startup.exe", mainSection.ExecutableName);
       Assert.AreEqual(@"$PROGRAMFILES\MyCompany\MyProject", mainSection.OutDir);
       
       Assert.AreEqual(1, mainSection.InputDirectories.Count);
@@ -76,17 +75,17 @@ namespace NsisCreator.Builder.Tests
     public void TestAdditionalSectionBuilder()
     {
       var builder = new ScriptBuilder();
-      var additionalSections = builder.AddAdditionalSection("OtherSection")
+      var additionalSections = builder.AddAdditionalSection("Section")
                                         .SetOutDir(Directory.ProgramFiles("MyCompany", "MyProject", "Other"))
                                         .Files.AddFromDirectory(@"C:\MyProject\OtherStuff")
                                           .AddExcludeFilter(FilterType.EndsWith, ".txt").Parent
                                           .Parent
                                         .Parent
                                       .GetScript()
-                                      .AdditonalSections;
+                                      .Sections;
 
       Assert.AreEqual(1, additionalSections.Count);
-      Assert.AreEqual("OtherSection", additionalSections[0].Name);
+      Assert.AreEqual("Section", additionalSections[0].Name);
       Assert.AreEqual(@"$PROGRAMFILES\MyCompany\MyProject\Other", additionalSections[0].OutDir);
 
       Assert.AreEqual(1, additionalSections[0].InputDirectories.Count);
