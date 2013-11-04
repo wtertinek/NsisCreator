@@ -31,6 +31,8 @@ namespace NsisCreator
 
     public string OutFileName { get; set; }
 
+    public string LicenseFileName { get; set; }
+
     public bool Uninstaller { get; set; }
 
     public bool ShowDetails { get; set; }
@@ -39,40 +41,46 @@ namespace NsisCreator
 
     public List<Section> Sections { get; set; }
 
+    public List<PageBase> Pages { get; set; }
+
     public string Generate()
     {
+      // TODO: Do full validation.
+
       var builder = new StringBuilder();
-      builder.AppendLine("!define PRODUCT_DIR_REGKEY \"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\{0}\"", ExecutableName);
-      builder.AppendLine("!define PRODUCT_UNINST_KEY \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0}\"", ProductName);
-      builder.AppendLine("!define PRODUCT_UNINST_ROOT_KEY \"HKLM\"");
+
+      if (!string.IsNullOrEmpty(ExecutableName))
+      {
+        builder.AppendLine("!define PRODUCT_DIR_REGKEY \"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\{0}\"", ExecutableName);
+      }
+
+      if (Uninstaller)
+      {
+        builder.AppendLine("!define PRODUCT_UNINST_KEY \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{0}\"", ProductName);
+        builder.AppendLine("!define PRODUCT_UNINST_ROOT_KEY \"HKLM\"");
+      }
+
       builder.AppendLine();
-      // TODO: Currently this code is static, insert page as a type.
-      builder.AppendLine("; MUI 1.67 compatible ------");
       builder.AppendLine("!include \"MUI.nsh\"");
       builder.AppendLine();
-      builder.AppendLine("; MUI Settings");
       builder.AppendLine("!define MUI_ABORTWARNING");
       builder.AppendLine("!define MUI_ICON \"${NSISDIR}\\Contrib\\Graphics\\Icons\\modern-install.ico\"");
+      
       builder.AppendLine("!define MUI_UNICON \"${NSISDIR}\\Contrib\\Graphics\\Icons\\modern-uninstall.ico\"");
+
       builder.AppendLine();
-      builder.AppendLine("; Welcome page");
-      builder.AppendLine("!insertmacro MUI_PAGE_WELCOME");
-      builder.AppendLine("; Instfiles page");
-      builder.AppendLine("!insertmacro MUI_PAGE_INSTFILES");
-      builder.AppendLine("; Finish page");
-      builder.AppendLine("!insertmacro MUI_PAGE_FINISH");
-      builder.AppendLine("; Uninstaller pages");
-      builder.AppendLine("!insertmacro MUI_UNPAGE_INSTFILES");
+
+      foreach (var page in Pages)
+      {
+        page.AppendInstallMacro(builder);
+      }
+
       builder.AppendLine();
-      builder.AppendLine("; Language files");
       builder.AppendLine("!insertmacro MUI_LANGUAGE \"German\"");
-      builder.AppendLine();
-      builder.AppendLine("; MUI end ------");
       builder.AppendLine();
       builder.AppendLine("Name \"{0}\"", ProductName);
       builder.AppendLine("OutFile \"{0}\"", OutFileName);
       builder.AppendLine("InstallDir \"{0}\"", InstallDir);
-      builder.AppendLine("InstallDirRegKey HKLM \"${PRODUCT_DIR_REGKEY}\" \"\"");
       builder.AppendLine("ShowInstDetails {0}", ShowDetails ? "show" : "hide");
       builder.AppendLine("ShowUnInstDetails {0}", ShowDetails ? "show" : "hide");
       builder.AppendLine("SilentInstall {0}", AllowSilentInstall ? "silent" : "normal");
@@ -95,14 +103,14 @@ namespace NsisCreator
       // TODO: Remove german texts
 
       builder.AppendLine();
-      builder.AppendLine("Function un.onUninstSuccess");      
-      builder.AppendLine(2, "HideWindow");
-      builder.AppendLine(2, "MessageBox MB_ICONINFORMATION|MB_OK \"$(^Name) wurde erfolgreich vom Computer entfernt.\" /SD IDOK");
-      builder.AppendLine("FunctionEnd");
-      builder.AppendLine();
       builder.AppendLine("Function un.onInit");
       builder.AppendLine(2, "MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 \"Sind sie sicher, dass sie $(^Name) und alle zugehörigen Komponenten entfernen möchten?\" /SD IDYES IDYES +2");
       builder.AppendLine(2, "Abort");
+      builder.AppendLine("FunctionEnd");
+      builder.AppendLine();
+      builder.AppendLine("Function un.onUninstSuccess");
+      builder.AppendLine(2, "HideWindow");
+      builder.AppendLine(2, "MessageBox MB_ICONINFORMATION|MB_OK \"$(^Name) wurde erfolgreich vom Computer entfernt.\" /SD IDOK");
       builder.AppendLine("FunctionEnd");
       builder.AppendLine();
       builder.AppendLine("# Function taken from http://nsis.sourceforge.net/Check_if_dir_is_empty");

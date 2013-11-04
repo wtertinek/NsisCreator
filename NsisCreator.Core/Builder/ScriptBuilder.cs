@@ -61,6 +61,12 @@ namespace NsisCreator.Builder
       return this;
     }
 
+    public ScriptBuilder SetLicenseFileName(string licenseFileName)
+    {
+      script.LicenseFileName = licenseFileName;
+      return this;
+    }
+
     public ScriptBuilder ShowDetails(bool show)
     {
       script.ShowDetails = show;
